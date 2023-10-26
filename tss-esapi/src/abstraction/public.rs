@@ -124,3 +124,105 @@ fn curve_oid(ecc_curve: EccCurve) -> Result<ObjectIdentifier, Error> {
         EccCurve::Sm2P256 => Ok(ObjectIdentifier::try_from("1.2.156.10197.1.301").unwrap()),
     }
 }
+
+#[cfg(feature = "rustcrypto")]
+mod rustcrypto {
+    use crate::{
+        interface_types::ecc::EccCurve,
+        structures::{Public, RsaExponent},
+        Error, WrapperErrorKind,
+    };
+
+    use core::convert::TryFrom;
+    use p256::elliptic_curve::{
+        generic_array::{typenum::Unsigned, GenericArray},
+        sec1::FromEncodedPoint,
+        Curve,
+    };
+    use rsa::{BigUint, RsaPublicKey};
+    use spki::{EncodePublicKey, SubjectPublicKeyInfoOwned};
+
+    impl TryFrom<Public> for SubjectPublicKeyInfoOwned {
+        type Error = Error;
+
+        /// Converts [`crate::structures::Public::Rsa`] and [`crate::structures::Public::Ecc`] to [`spki::SubjectPublicKeyInfo`].
+        ///
+        /// # Details
+        /// The result can be used to convert TPM public keys to DER using `picky_asn1_der`.
+        ///
+        /// # Errors
+        /// * if other instances of [`crate::structures::Public`] are used `UnsupportedParam` will be returned.
+        fn try_from(public: Public) -> Result<Self, Self::Error> {
+            match public {
+                Public::Rsa {
+                    unique, parameters, ..
+                } => {
+                    let exponent = match parameters.exponent() {
+                        RsaExponent::ZERO_EXPONENT => BigUint::from(65537u32),
+                        e => BigUint::from(e.value()),
+                    };
+                    let modulus = BigUint::from_bytes_be(unique.as_bytes());
+
+                    let pub_key = RsaPublicKey::new(modulus, exponent)
+                        .map_err(|_| Error::local_error(WrapperErrorKind::InvalidParam))?;
+
+                    Ok(pub_key
+                        .to_public_key_der()
+                        .map_err(|_| Error::local_error(WrapperErrorKind::InvalidParam))?
+                        .decode_msg::<SubjectPublicKeyInfoOwned>()
+                        .map_err(|_| Error::local_error(WrapperErrorKind::InvalidParam))?)
+                }
+
+                Public::Ecc {
+                    parameters, unique, ..
+                } => {
+                    let curve = parameters.ecc_curve();
+
+                    let x = unique.x().as_bytes();
+                    let y = unique.x().as_bytes();
+
+                    macro_rules! get_key_ecdsa {
+                        ($crypto_root:ident, $curve:ty) => {{
+                            let x = if x.len() == <$curve as Curve>::FieldBytesSize::USIZE {
+                                GenericArray::from_slice(x)
+                            } else {
+                                return Err(Error::local_error(WrapperErrorKind::InvalidParam));
+                            };
+
+                            let y = if y.len() == <$curve as Curve>::FieldBytesSize::USIZE {
+                                GenericArray::from_slice(y)
+                            } else {
+                                return Err(Error::local_error(WrapperErrorKind::InvalidParam));
+                            };
+
+                            let point =
+                                ::$crypto_root::EncodedPoint::from_affine_coordinates(x, y, false);
+
+                            // `into` degrades the constant time option in a regular option, but
+                            // we're talking public keys here, I don't think we need the constant
+                            // time guarantees.
+                            let key: Option<::$crypto_root::PublicKey> =
+                                ::$crypto_root::PublicKey::from_encoded_point(&point).into();
+                            let key =
+                                key.ok_or(Error::local_error(WrapperErrorKind::InvalidParam))?;
+
+                            Ok(key
+                                .to_public_key_der()
+                                .map_err(|_| Error::local_error(WrapperErrorKind::InvalidParam))?
+                                .decode_msg::<SubjectPublicKeyInfoOwned>()
+                                .map_err(|_| Error::local_error(WrapperErrorKind::InvalidParam))?)
+                        }};
+                    }
+
+                    match curve {
+                        EccCurve::NistP256 => get_key_ecdsa!(p256, p256::NistP256),
+                        EccCurve::NistP384 => get_key_ecdsa!(p384, p384::NistP384),
+                        _ => Err(Error::local_error(WrapperErrorKind::UnsupportedParam)),
+                    }
+                }
+
+                _ => Err(Error::local_error(WrapperErrorKind::UnsupportedParam)),
+            }
+        }
+    }
+}
