@@ -33,3 +33,15 @@ x509-cert  = { git = "https://github.com/RustCrypto/formats.git" }
 
 crypto-bigint = { git = "https://github.com/RustCrypto/crypto-bigint.git" }
 crypto-primes = { git = "https://github.com/entropyxyz/crypto-primes.git" }
+ 
+# https://github.com/RustCrypto/KDFs/pull/108
+concat-kdf = { git = "https://github.com/RustCrypto/KDFs.git" }
+
+cfb-mode = { git = "https://github.com/RustCrypto/block-modes.git" }
+
+# https://github.com/RustCrypto/block-ciphers/pull/465
+aes = { git = "https://github.com/RustCrypto/block-ciphers.git" }
+
+hkdf = { git = "https://github.com/RustCrypto/KDFs.git" }
+
+hmac = { git = "https://github.com/baloo/MACs.git", branch = "baloo/digest-pin" }
