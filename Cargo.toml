@@ -9,3 +9,5 @@ p224       = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
 sm2        = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
 
 x509-cert  = { git = "https://github.com/RustCrypto/formats.git" }
+ 
+concat-kdf = { git = "https://github.com/RustCrypto/KDFs.git" }
