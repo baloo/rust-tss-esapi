@@ -1,3 +1,35 @@
 [workspace]
 resolver = "2"
 members = ["tss-esapi", "tss-esapi-sys"]
+
+[patch.crates-io]
+p192 = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p224 = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p256 = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p384 = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p521 = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+sm2  = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+
+rsa = { git = "https://github.com/baloo/RSA.git", branch = "baloo/digest/newtype" }
+
+crypto-common  = { git = "https://github.com/baloo/traits.git", branch = "baloo/digest-newtype-master" }
+digest         = { git = "https://github.com/baloo/traits.git", branch = "baloo/digest-newtype-master" }
+elliptic-curve = { git = "https://github.com/baloo/traits.git", branch = "baloo/digest-newtype-master" }
+signature      = { git = "https://github.com/baloo/traits.git", branch = "baloo/digest-newtype-master" }
+
+sha1         = { git = "https://github.com/RustCrypto/hashes.git", branch = "newtype" }
+sha2         = { git = "https://github.com/RustCrypto/hashes.git", branch = "newtype" }
+sha3         = { git = "https://github.com/RustCrypto/hashes.git", branch = "newtype" }
+sm3          = { git = "https://github.com/RustCrypto/hashes.git", branch = "newtype" }
+
+ecdsa   = { git = "https://github.com/RustCrypto/signatures.git" }
+rfc6979 = { git = "https://github.com/RustCrypto/signatures.git" }
+
+der        = { git = "https://github.com/RustCrypto/formats.git" }
+der_derive = { git = "https://github.com/RustCrypto/formats.git" }
+pkcs1      = { git = "https://github.com/RustCrypto/formats.git" }
+pkcs8      = { git = "https://github.com/RustCrypto/formats.git" }
+x509-cert  = { git = "https://github.com/RustCrypto/formats.git" }
+
+crypto-bigint = { git = "https://github.com/RustCrypto/crypto-bigint.git" }
+crypto-primes = { git = "https://github.com/entropyxyz/crypto-primes.git" }
