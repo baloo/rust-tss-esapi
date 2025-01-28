@@ -1,11 +1,11 @@
 // Copyright 2021 Contributors to the Parsec project.
 // SPDX-License-Identifier: Apache-2.0
 use crate::{
-    Context, Result, ReturnCode,
     handles::KeyHandle,
     interface_types::ecc::EccCurve,
     structures::{EccParameter, EccPoint, SensitiveData},
     tss2_esys::{Esys_Commit, Esys_EC_Ephemeral},
+    Context, Result, ReturnCode,
 };
 use log::error;
 use std::convert::TryFrom;
@@ -78,7 +78,7 @@ impl Context {
     /// #     .expect("Failed to set attributes on session");
     /// # context.set_sessions((Some(session), None, None));
     /// # let mut random_digest = vec![0u8; 16];
-    /// # getrandom::getrandom(&mut random_digest).expect("Failed to get random bytes");
+    /// # getrandom::fill(&mut random_digest).expect("Failed to get random bytes");
     /// # let key_auth
     /// #     = Auth::from_bytes(random_digest.as_slice()).expect("Failed to create key auth");
     /// #
