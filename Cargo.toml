@@ -1,3 +1,11 @@
 [workspace]
 resolver = "2"
 members = ["tss-esapi", "tss-esapi-sys"]
+
+[patch.crates-io]
+primeorder = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p192       = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+p224       = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+sm2        = { git = "https://github.com/RustCrypto/elliptic-curves.git" }
+
+x509-cert  = { git = "https://github.com/RustCrypto/formats.git" }
