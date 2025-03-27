@@ -38,7 +38,7 @@ x509-cert = { version = "0.3.0-pre.0", optional = true }
 aes = { version = "0.9.0-pre.2", optional = true }
 cfb-mode = { version = "0.9.0-pre", optional = true }
 ecdsa = { version = "0.17.0-pre.9", features = ["der", "hazmat", "arithmetic", "verifying"], optional = true }
-elliptic-curve = { version = "0.14.0-rc.1", optional = true, features = ["alloc", "pkcs8"] }
+elliptic-curve = { version = "0.14.0-rc.1", optional = true, features = ["alloc", "pkcs8", "ecdh"] }
 hmac = { version = "0.13.0-pre.4", optional = true }
 p192 = { version = "0.14.0-pre", optional = true }
 p224 = { version = "0.14.0-pre", optional = true }
@@ -60,8 +60,8 @@ cfg-if = "1.0.0"
 strum = { version = "0.26.3", optional = true }
 strum_macros = { version = "0.26.4", optional = true }
 paste = "1.0.14"
-getrandom = "0.2.11"
-rand = "0.8"
+getrandom = "0.3"
+rand = "0.9"
 
 [dev-dependencies]
 aes = "0.9.0-pre.2"

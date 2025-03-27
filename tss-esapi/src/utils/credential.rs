@@ -24,7 +24,7 @@ use ecdsa::elliptic_curve::{
 };
 use hmac::{EagerHash, Hmac};
 use log::error;
-use rand::{thread_rng, Rng};
+use rand::{rng, Rng};
 use rsa::{Oaep, RsaPublicKey};
 
 use crate::{
@@ -82,7 +82,7 @@ where
     <EkCipher as KeySizeUser>::KeySize: Mul<U8>,
     <<EkCipher as KeySizeUser>::KeySize as Mul<U8>>::Output: ArraySize,
 {
-    let mut rng = thread_rng();
+    let mut rng = rng();
 
     loop {
         // See Table 22 - Key Generation for the various labels used here after:
@@ -155,7 +155,7 @@ where
     <EkCipher as KeySizeUser>::KeySize: Mul<U8>,
     <<EkCipher as KeySizeUser>::KeySize as Mul<U8>>::Output: ArraySize,
 {
-    let mut rng = thread_rng();
+    let mut rng = rng();
 
     loop {
         // See Table 22 - Key Generation for the various labels used here after:
@@ -165,10 +165,7 @@ where
         // https://trustedcomputinggroup.org/wp-content/uploads/TPM-2.0-1.83-Part-1-Architecture.pdf#page=302
         let random_seed = {
             let mut out = Key::<TpmHmac<EkHash>>::default();
-            rng.try_fill(out.as_mut_slice()).map_err(|e| {
-                error!("RNG error: {e}");
-                Error::local_error(WrapperErrorKind::InternalError)
-            })?;
+            rng.fill(out.as_mut_slice());
             out
         };
 
