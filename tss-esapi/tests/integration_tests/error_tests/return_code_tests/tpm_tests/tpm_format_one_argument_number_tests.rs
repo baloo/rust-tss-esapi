@@ -52,7 +52,7 @@ fn test_valid_parameter_conversions() {
         assert_eq!(
             expected,
             actual,
-            "Performing `from` conversion return code {return_code_argument_info:#02X} did not produce the expected {} with value {val}",
+            "Performing `from` conversion return code {return_code_argument_info:#X} did not produce the expected {} with value {val}",
             std::stringify!(ArgumentNumber::Parameter),
         );
     })
@@ -85,7 +85,7 @@ fn test_valid_session_conversions() {
         assert_eq!(
             expected,
             actual,
-            "Performing `from` conversion return code {return_code_argument_info:#02X} did not produce the expected {} with value {val}",
+            "Performing `from` conversion return code {return_code_argument_info:#X} did not produce the expected {} with value {val}",
             std::stringify!(ArgumentNumber::Session),
         );
     })
@@ -118,7 +118,7 @@ fn test_valid_handle_conversions() {
         assert_eq!(
             expected,
             actual,
-            "Performing `from` conversion return code {return_code_argument_info:#02X} did not produce the expected {} with value {val}",
+            "Performing `from` conversion return code {return_code_argument_info:#X} did not produce the expected {} with value {val}",
             std::stringify!(ArgumentNumber::Handle)
         );
     })

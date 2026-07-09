@@ -33,7 +33,7 @@ impl TryFrom<u8> for ReturnCodeLayer {
 
     fn try_from(value: u8) -> Result<Self> {
         ReturnCodeLayer::from_u8(value).ok_or_else(|| {
-            error!("{:#02X} is not valid ReturnCodeLayer", value);
+            error!("{:#X} is not valid ReturnCodeLayer", value);
             Error::local_error(WrapperErrorKind::InvalidParam)
         })
     }
