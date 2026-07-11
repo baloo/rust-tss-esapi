@@ -8,8 +8,8 @@ use std::convert::{TryFrom, TryInto};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HashAgile {
-    algorithm: HashingAlgorithm,
-    digest: Digest,
+    pub(crate) algorithm: HashingAlgorithm,
+    pub(crate) digest: Digest,
 }
 
 impl HashAgile {
@@ -63,5 +63,12 @@ impl TryFrom<TPMT_HA> for HashAgile {
                 _ => return Err(Error::local_error(WrapperErrorKind::WrongValueFromTpm)),
             },
         })
+    }
+}
+
+impl HashAgile {
+    /// Return the [`HashingAlgorithm`] of the [`HashAgile`]
+    pub fn hashing_algorithm(&self) -> HashingAlgorithm {
+        self.algorithm
     }
 }

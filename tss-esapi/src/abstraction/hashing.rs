@@ -3,6 +3,12 @@
 
 use crate::interface_types::algorithm::HashingAlgorithm;
 
+#[cfg(feature = "rustcrypto")]
+use {
+    crate::{Error, Result, WrapperErrorKind, structures::HashAgile},
+    digest::{Output, OutputSizeUser},
+};
+
 /// Provides the value of the digest used in this crate for the digest.
 pub trait AssociatedHashingAlgorithm {
     /// Value of the digest when interacting with the TPM.
@@ -47,4 +53,23 @@ impl AssociatedHashingAlgorithm for sha3::Sha3_384 {
 #[cfg(feature = "sha3")]
 impl AssociatedHashingAlgorithm for sha3::Sha3_512 {
     const TPM_DIGEST: HashingAlgorithm = HashingAlgorithm::Sha3_512;
+}
+
+impl HashAgile {
+    #[cfg(feature = "rustcrypto")]
+    /// Return the hash content of the [`HashAgile`]
+    ///
+    /// # Errors
+    ///
+    /// Return an error if the specified [`AssociatedHashingAlgorithm`] is not the
+    /// one in the [`HashAgile`].
+    pub fn to_output<H: AssociatedHashingAlgorithm + OutputSizeUser>(&self) -> Result<Output<H>> {
+        if self.algorithm == H::TPM_DIGEST {
+            <&Output<H>>::try_from(self.digest.as_bytes())
+                .map_err(|_| Error::local_error(WrapperErrorKind::WrongValueFromTpm))
+                .cloned()
+        } else {
+            Err(Error::local_error(WrapperErrorKind::InvalidParam))
+        }
+    }
 }
