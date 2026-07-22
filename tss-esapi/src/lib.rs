@@ -5,7 +5,6 @@
     dead_code,
     improper_ctypes,
     non_shorthand_field_patterns,
-    no_mangle_generic_items,
     overflowing_literals,
     path_statements,
     patterns_in_fns_without_body,
@@ -60,7 +59,7 @@
 //! are at most one level away from root.
 //!
 //! Minimum supported Rust version (MSRV):
-//! We currently check with version 1.85.0 of the Rust compiler during CI builds.
+//! We currently check with version 1.88.0 of the Rust compiler during CI builds.
 //!
 //! # Notes on code safety:
 //! * thread safety is ensured by the required mutability of the `Context` structure within the
